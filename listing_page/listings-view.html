@@ -9,7 +9,7 @@
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
         <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="css/styles.css" rel="stylesheet" />
+        <link href="../css/styles.css" rel="stylesheet" />
     </head>
     <body>
         <!-- Navigation-->
@@ -39,11 +39,13 @@
                         <a class="list-group-item" href="#!">Move-In Date</a>
                         <a class="list-group-item" href="#!">Move-Out Date</a>
                         <a class="list-group-item" href="#!">Dishwasher</a>
+                        <div class="checkbox"><label><input type="checkbox" rel="washer-dryer"/> Washer/Dryer</label></div>
                         <a class="list-group-item" href="#!">Single vs. Shared Housing</a>
                         <a class="list-group-item" href="#!">Washer/Dryer</a>
                         <a class="list-group-item" href="#!">Single Room</a>
                         <a class="list-group-item" href="#!">Number of Roommates</a>
                         <a class="list-group-item" href="#!">Number of Bedrooms</a>
+                        <button onclick="myFunction()">Apply Filters</button>
                     </div>
                 </div>
                 <div class="col-lg-9">
@@ -68,7 +70,7 @@
                         </a>
                     </div>
                     <div class="row">
-                        <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="col-lg-4 col-md-6 mb-4 one">
                             <div class="card h-100">
                                 <a href="room-view.html"><img class="card-img-top" src="https://via.placeholder.com/700x400" alt="..." /></a>
                                 <div class="card-body">
@@ -146,6 +148,6 @@
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
-        <script src="js/scripts.js"></script>
+        <script src="./js/scripts.js"></script>
     </body>
 </html>
