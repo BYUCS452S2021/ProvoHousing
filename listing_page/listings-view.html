@@ -7,9 +7,13 @@
         <meta name="author" content="" />
         <title>Provo Housing</title>
         <!-- Favicon-->
-        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <link rel="icon" type="image/x-icon" href="../assets/favicon.ico" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="../css/styles.css" rel="stylesheet" />
+        <!-- Core theme JS-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="../js/scripts.js"></script>
+        
     </head>
     <body>
         <!-- Navigation-->
@@ -35,17 +39,60 @@
                 <div class="col-lg-3">
                     <h1 class="my-4">Shop Name</h1>
                     <div class="list-group">
-                        <a class="list-group-item" href="#!">Maximum Price</a>
-                        <a class="list-group-item" href="#!">Move-In Date</a>
-                        <a class="list-group-item" href="#!">Move-Out Date</a>
-                        <a class="list-group-item" href="#!">Dishwasher</a>
-                        <div class="checkbox"><label><input type="checkbox" rel="washer-dryer"/> Washer/Dryer</label></div>
-                        <a class="list-group-item" href="#!">Single vs. Shared Housing</a>
-                        <a class="list-group-item" href="#!">Washer/Dryer</a>
-                        <a class="list-group-item" href="#!">Single Room</a>
-                        <a class="list-group-item" href="#!">Number of Roommates</a>
-                        <a class="list-group-item" href="#!">Number of Bedrooms</a>
-                        <button onclick="myFunction()">Apply Filters</button>
+                        <ul id="filters">
+                            <li>
+                                <input type="checkbox" value="dishwasher" id="filter-dishwasher" checked/>
+                                <label for="filter-dishwasher">Dishwasher</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" value="washer-dryer" id="filter-washer-dryer" checked/>
+                                <label for="filter-washer-dryer">Washer/Dryer</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" value="single-room" id="filter-single-room" checked/>
+                                <label for="filter-single-room">Single Room</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" value="under-4-roommates" id="filter-under-4-roommates" checked/>
+                                <label for="filter-under-4-roommates">Under 4 Roomates</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" value="under-6-roommates" id="filter-under-6-roommates" checked/>
+                                <label for="filter-under-6-roommates">Under 6 Roomates</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" value="under-$1000" id="filter-under-$1000" checked/>
+                                <label for="filter-under-$1000">Under $1000</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" value="under-$750" id="filter-under-$750" checked/>
+                                <label for="filter-under-$750">Under $750</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" value="under-$500" id="filter-under-$500" checked/>
+                                <label for="filter-under-$500">Under $500</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" value="3-bed" id="3-bed" checked/>
+                                <label for="3-bed">3 Bedrooms</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" value="2-bed" id="2-bed" checked/>
+                                <label for="2-bed">2 Bedrooms</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" value="1-bed" id="1-bed" checked/>
+                                <label for="1-bed">1 Bedrooms</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" value="married-housing" id="married-housing" checked/>
+                                <label for="married-housing">Married Housing</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" value="single-housing" id="single-housing" checked/>
+                                <label for="single-housing">Single Housing</label>
+                            </li>
+                        </ul>
                     </div>
                 </div>
                 <div class="col-lg-9">
@@ -71,7 +118,7 @@
                     </div>
                     <div class="row">
                         <div class="col-lg-4 col-md-6 mb-4 one">
-                            <div class="card h-100">
+                            <div class="card h-100 dishwasher washer-dryer">
                                 <a href="room-view.html"><img class="card-img-top" src="https://via.placeholder.com/700x400" alt="..." /></a>
                                 <div class="card-body">
                                     <h4 class="card-title"><a href="room-view.html">Apartment One</a></h4>
@@ -82,7 +129,7 @@
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="card h-100">
+                            <div class="card h-100 dishwasher">
                                 <a href="#!"><img class="card-img-top" src="https://via.placeholder.com/700x400" alt="..." /></a>
                                 <div class="card-body">
                                     <h4 class="card-title"><a href="#!">Apartment Two</a></h4>
@@ -93,7 +140,7 @@
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="card h-100">
+                            <div class="card h-100 washer-dryer">
                                 <a href="#!"><img class="card-img-top" src="https://via.placeholder.com/700x400" alt="..." /></a>
                                 <div class="card-body">
                                     <h4 class="card-title"><a href="#!">Apartment Three</a></h4>
@@ -145,9 +192,7 @@
             <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2021</p></div>
         </footer>
         <!-- Bootstrap core JS-->
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script scr="https://unpkg.com/axios/dist/axios.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- Core theme JS-->
-        <script src="./js/scripts.js"></script>
     </body>
 </html>
