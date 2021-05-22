@@ -31,7 +31,7 @@ CREATE TABLE MarriedHousing (
 
 CREATE TABLE SingleHousing (
 	roomId INT PRIMARY KEY,
-    isShared BOOLEAN,
+    	isShared BOOLEAN,
 	numRoommates INT,
 	isMale BOOLEAN,
 	isBYUApproved BOOLEAN,
@@ -42,10 +42,10 @@ CREATE TABLE SingleHousing (
 
 CREATE TABLE Users (
 	userId VARCHAR(50) PRIMARY KEY UNIQUE,
-    firstName VARCHAR(50),
+    	firstName VARCHAR(50),
 	lastName VARCHAR(50),
-    password VARCHAR(50),
-    email VARCHAR(50) UNIQUE,
+    	password VARCHAR(50),
+    	email VARCHAR(50) UNIQUE,
 	phone VARCHAR(15)
 );
 
@@ -59,26 +59,26 @@ CREATE TABLE AuthTokens (
 
 CREATE TABLE Listings (
 	userId VARCHAR(50),
-    roomId INT,
+    	roomId INT,
 	listingDate DATE,
 	showPhoneOnListing BOOLEAN,
-		 PRIMARY KEY (userId, roomId),
+	PRIMARY KEY (userId, roomId),
         FOREIGN KEY(userId) REFERENCES User(userId)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,
-	    FOREIGN KEY(roomId) REFERENCES Housing(roomId)
+	FOREIGN KEY(roomId) REFERENCES Housing(roomId)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 );
 
 CREATE TABLE Watching (
 	userId VARCHAR(50),
-    roomId INT,
-		PRIMARY KEY (userId, roomId),
+	roomId INT,
+	PRIMARY KEY (userId, roomId),
         FOREIGN KEY(userId) REFERENCES User(userId)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,
-	    FOREIGN KEY(roomId) REFERENCES Housing(roomId)
+	FOREIGN KEY(roomId) REFERENCES Housing(roomId)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 );
