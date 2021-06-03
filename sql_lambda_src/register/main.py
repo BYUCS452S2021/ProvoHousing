@@ -8,37 +8,30 @@ def connect():
     cnx = None
     try:
         cnx = mysql.connector.connect(user='admin', passwd='ProvoHousing452!',
-                                      host='provohousing.cqot4b4a9lbm.us-east-2.rds.amazonaws.com',
-                                      database = 'provo-housing')
+                                    host='provo-housing.cqot4b4a9lbm.us-east-2.rds.amazonaws.com',
+                                    database = 'provohousing')
         cnx.autocommit = True
         print("successful connection")
     except Error as e:
         print("error connecting", e)
     return cnx
 
-def login(userId, pwd, cnx):
+def register(userId, firstname, lastname, pwd, email, phone, cnx):
     cursor = cnx.cursor()
-    query = f"SELECT password FROM Users WHERE userId = '{userId}'"
+    query = "INSERT INTO Users(userId, firstName, lastName, password, email, phone) " \
+    f"VALUES('{userId}', '{firstname}', '{lastname}', '{pwd}', '{email}', '{phone}');"
+    print(query)
     cursor.execute(query)
-    result = cursor.fetchall()
-    if not result or len(result) == 0:
-        return False
-    db_pwd = result[0][0]
-    return db_pwd == pwd
+    cnx.commit()
+    return "success"
 
 def lambda_handler(event, context):
     connection = connect()
     if not connection:
         token = ''
     else:
-        success = login(event['userId'], event['password'], connection)
+        success = register(event['userId'], event['firstName'], event['lastName'], event['password'], event['email'], event['phone'], connection)
         token = 'true' if success else 'false'
     return {
         'authToken': token
     }
-
-if __name__ == '__main__':
-    print(lambda_handler({
-        'userId': 'mamberly',
-        'password': 'test'
-    }, None))

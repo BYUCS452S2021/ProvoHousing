@@ -239,7 +239,7 @@ class FieldType(_Constants):
 class FieldFlag(_Flags):
     """MySQL Field Flags
 
-    Field flags as found in MySQL sources mysql-lambda_src/include/mysql_com.h
+    Field flags as found in MySQL sources mysql-sql_lambda_src/include/mysql_com.h
     """
     _prefix = ''
     NOT_NULL = 1 << 0
@@ -373,7 +373,7 @@ class ServerCmd(_Constants):
 class ClientFlag(_Flags):
     """MySQL Client Flags
 
-    Client options as found in the MySQL sources mysql-lambda_src/include/mysql_com.h
+    Client options as found in the MySQL sources mysql-sql_lambda_src/include/mysql_com.h
     """
     LONG_PASSWD = 1 << 0
     FOUND_ROWS = 1 << 1
@@ -460,7 +460,7 @@ class ClientFlag(_Flags):
 class ServerFlag(_Flags):
     """MySQL Server Flags
 
-    Server flags as found in the MySQL sources mysql-lambda_src/include/mysql_com.h
+    Server flags as found in the MySQL sources mysql-sql_lambda_src/include/mysql_com.h
     """
     _prefix = 'SERVER_'
     STATUS_IN_TRANS = 1 << 0

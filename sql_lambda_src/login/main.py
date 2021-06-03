@@ -8,8 +8,8 @@ def connect():
     cnx = None
     try:
         cnx = mysql.connector.connect(user='admin', passwd='ProvoHousing452!',
-                                      host='provohousing.cqot4b4a9lbm.us-east-2.rds.amazonaws.com',
-                                      database = 'provo-housing')
+                                    host='provo-housing.cqot4b4a9lbm.us-east-2.rds.amazonaws.com',
+                                    database = 'provohousing')
         cnx.autocommit = True
         print("successful connection")
     except Error as e:
