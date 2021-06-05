@@ -1,7 +1,7 @@
 #!/bin/bash
 
-fn_names=('PostProvoHousing' 'GetProvoListings' 'ProvoUserLogin' 'ProvoUserRegister')
-dir_names=('add_listing' 'get_listings' 'login' 'register')
+fn_names=('ProvoUserLogin' 'ProvoUserRegister' 'PostProvoHousing')
+dir_names=('login' 'register' 'add_listing')
 # shellcheck disable=SC2164
 cd dynamo_lambda_src
 
