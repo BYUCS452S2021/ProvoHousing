@@ -1,7 +1,20 @@
 import boto3
 
 HOUSING_TABLE = 'Housing'
-FILTER_TABLE = 'FilteredHousing'
+FILTER_TABLE = 'FilterHousing'
+
+married_keys = ["married -- numBedrooms"]
+
+single_keys = [
+    "single -- male:single",
+    "single -- male:shared",
+    "single -- female:single",
+    "single -- female:shared"
+]
+
+married_key_cols = ["numBedrooms"]
+
+single_key_cols = ["isMale", "isShared"]
 
 housing_cols = {
     'roomId': 'N',
@@ -12,14 +25,11 @@ housing_cols = {
 }
 married_cols = {
     'startAvailability': 'S',
-    'endAvailability': 'S',
-    'numBedrooms': 'N'
+    'endAvailability': 'S'
 }
 single_cols = {
     'endYear': 'N',
     'endSemester': 'S',
-    'isShared': 'S',
-    'isMale': 'S',
     'isBYUApproved': 'BOOL',
     'numRoommates': 'N'
 }
@@ -40,6 +50,24 @@ def get_next_room_id():
         AttributesToGet=['totalRoomCount'],
     )
     return int(resp['Item']['totalRoomCount']['N']) + 1
+
+
+def key_exists(key):
+    client = boto3.client('dynamodb')
+    resp = client.get_item(
+        TableName=FILTER_TABLE,
+        Key=key
+    )
+    return 'Item' in resp and len(resp['Item']) > 1
+
+def add_new_room_id(key, room_id):
+    client = boto3.client('dynamodb')
+    client.update_item(
+        Key= key,
+        TableName=FILTER_TABLE,
+        ExpressionAttributeValues={":inc": {'SS': [room_id]}},
+        UpdateExpression="ADD roomIds :inc"
+    )
 
 
 def update_count():
@@ -75,7 +103,7 @@ def update_count():
 
 def post_housing(item_data, table):
     client = boto3.client('dynamodb')
-
+    print(item_data)
     # Generate roomId
     client.put_item(
         Item=item_data,
@@ -84,6 +112,10 @@ def post_housing(item_data, table):
 
 
 def make_id(tpe, value):
+    if tpe == 'SS':
+        return {
+            tpe: value
+        }
     if tpe != 'BOOL' and type(value) != str:
         value = str(value)
     return {
@@ -107,45 +139,35 @@ def get_housing_data(event):
     return res
 
 
-def add_filter_data_married(event):
+def add_filter_data(event, cols):
     item_data = get_housing_data(event)
-    check_data(event, married_cols)
+    check_data(event, cols)
 
+    type = 'married' if event['isMarried'] else 'single'
+    item_data['type'] = make_id('S', type)
     del event['isMarried']
 
-    item_data['type'] = make_id('S', 'married')
     for e in event:
         if e in item_data:
             continue
-        if e not in married_cols:
-            married_cols[e] = 'S'
-        item_data[e] = make_id(married_cols[e], event[e])
+        if e not in cols:
+            cols[e] = 'S'
+        item_data[e] = make_id(cols[e], event[e])
     return item_data
 
 
-def add_filter_data_single(event):
-    item_data = get_housing_data(event)
-    check_data(event, single_cols)
 
-    item_data['type'] = make_id('S', 'single')
-
-    for e in event:
-        if e in item_data or e == 'isMarried':
-            continue
-        elif e == 'isMale':
-            new_title = 'gender'
-            val = 'male' if event[e] else 'female'
-            item_data[new_title] = make_id(single_cols[e], val)
-            continue
-        elif e == 'isShared':
-            new_title = 'single/shared'
-            val = 'shared' if event[e] else 'single'
-            item_data[new_title] = make_id(single_cols[e], val)
-            continue
-        if e not in single_cols:
-            single_cols[e] = 'S'
-        item_data[e] = make_id(single_cols[e], event[e])
-    return item_data
+def generate_primary_key(event, type, cols):
+    check_data(event, cols)
+    if type == 'single':
+        event['isMale'] = 'male' if event['isMale'] else 'female'
+        event['isShared'] = 'shared' if event['isShared'] else 'single'
+    key_parts = [str(event[col]) for col in cols]
+    key = ':'.join(key_parts)
+    return {
+        "type": make_id("S", type),
+        "sortKey": make_id("S", key)
+    }
 
 
 def lambda_handler(event, context):
@@ -157,23 +179,21 @@ def lambda_handler(event, context):
         reason = 'We need the userId'
     else:
         try:
+            type = 'married' if event['isMarried'] else 'single'
             room_id = get_next_room_id()
             print("This is the random RoomId:", room_id)
-            user_id = event['userId']
-            item_data = {
-                'roomId': {
-                    'N': str(room_id),
-                },
-                'userId': {
-                    'S': user_id,
-                },
-            }
-
-            post_housing(item_data, HOUSING_TABLE)
+            cols = married_cols if event['isMarried'] else single_cols
+            key_cols = married_key_cols if event['isMarried'] else single_key_cols
             event['roomId'] = room_id
-            item_data = add_filter_data_married(event) if event['isMarried'] else add_filter_data_single(event)
-            print(item_data)
-            post_housing(item_data, FILTER_TABLE)
+            item_data = add_filter_data(event, cols)
+            post_housing(item_data, HOUSING_TABLE)
+
+            primary_key = generate_primary_key(event, type, key_cols)
+            if key_exists(primary_key):
+                add_new_room_id(primary_key, room_id)
+            else:
+                primary_key['roomIds'] = make_id('SS', [str(room_id)])
+                post_housing(primary_key, FILTER_TABLE)
             update_count()
             success = True
         except NameError as e:
