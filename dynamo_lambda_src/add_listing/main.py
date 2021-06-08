@@ -60,12 +60,12 @@ def key_exists(key):
     )
     return 'Item' in resp and len(resp['Item']) > 1
 
-def add_new_room_id(key, room_id):
+def add_new_room_id(key, housing_key):
     client = boto3.client('dynamodb')
     client.update_item(
         Key= key,
         TableName=FILTER_TABLE,
-        ExpressionAttributeValues={":inc": {'SS': [room_id]}},
+        ExpressionAttributeValues={":inc": {'SS': [housing_key]}},
         UpdateExpression="ADD roomIds :inc"
     )
 
@@ -181,6 +181,8 @@ def lambda_handler(event, context):
         try:
             type = 'married' if event['isMarried'] else 'single'
             room_id = get_next_room_id()
+            user_id = event['userId']
+            housing_key = f"{room_id}:{user_id}"
             print("This is the random RoomId:", room_id)
             cols = married_cols if event['isMarried'] else single_cols
             key_cols = married_key_cols if event['isMarried'] else single_key_cols
@@ -192,7 +194,7 @@ def lambda_handler(event, context):
             if key_exists(primary_key):
                 add_new_room_id(primary_key, room_id)
             else:
-                primary_key['roomIds'] = make_id('SS', [str(room_id)])
+                primary_key['roomIds'] = make_id('SS', [housing_key])
                 post_housing(primary_key, FILTER_TABLE)
             update_count()
             success = True
