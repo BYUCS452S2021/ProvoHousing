@@ -130,5 +130,6 @@ dmypy.json
 
 
 .idea/
-sql_lambda_src/dependencies
+lambda_src/sql_lambda_src/dependencies
 *.zip
+*__init__.py
