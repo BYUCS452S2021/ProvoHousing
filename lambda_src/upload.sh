@@ -14,3 +14,10 @@ for ((i = 0; i < ${#dir_names[@]}; ++i)); do
   cd ../
 
 done
+
+
+# shellcheck disable=SC2164
+cd get_listings
+zip -r get_listings.zip main.py dependencies/
+aws lambda update-function-code --function-name "GetProvoListings" --zip-file fileb://"get_listings".zip
+cd ../
